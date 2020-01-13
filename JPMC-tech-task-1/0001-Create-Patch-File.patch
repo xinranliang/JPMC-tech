@@ -1,0 +1,226 @@
+From 2a73a6ce2f38692fd6ce3420ea3cf1fa4af13be8 Mon Sep 17 00:00:00 2001
+From: Xinran Liang <xinranliang@berkeley.edu>
+Date: Sun, 12 Jan 2020 21:31:27 +0800
+Subject: [PATCH] Create Patch File
+
+---
+ .idea/$PRODUCT_WORKSPACE_FILE$ |  19 +++++++++++++++++++
+ .idea/.gitignore               |   2 ++
+ .idea/misc.xml                 |   6 ++++++
+ .idea/modules.xml              |   8 ++++++++
+ .idea/vcs.xml                  |   6 ++++++
+ JPMC-tech-task-1.iml           |   9 +++++++++
+ client.py                      |  10 +++++++---
+ client.pyc                     | Bin 0 -> 1434 bytes
+ client_test.py                 |  20 ++++++++++++++++++++
+ 9 files changed, 77 insertions(+), 3 deletions(-)
+ create mode 100644 .idea/$PRODUCT_WORKSPACE_FILE$
+ create mode 100644 .idea/.gitignore
+ create mode 100644 .idea/misc.xml
+ create mode 100644 .idea/modules.xml
+ create mode 100644 .idea/vcs.xml
+ create mode 100644 JPMC-tech-task-1.iml
+ create mode 100644 client.pyc
+
+diff --git a/.idea/$PRODUCT_WORKSPACE_FILE$ b/.idea/$PRODUCT_WORKSPACE_FILE$
+new file mode 100644
+index 0000000..a1409e4
+--- /dev/null
++++ b/.idea/$PRODUCT_WORKSPACE_FILE$
+@@ -0,0 +1,19 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="masterDetails">
++    <states>
++      <state key="ProjectJDKs.UI">
++        <settings>
++          <last-edited>12</last-edited>
++          <splitter-proportions>
++            <option name="proportions">
++              <list>
++                <option value="0.2" />
++              </list>
++            </option>
++          </splitter-proportions>
++        </settings>
++      </state>
++    </states>
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+index 0000000..5c98b42
+--- /dev/null
++++ b/.idea/.gitignore
+@@ -0,0 +1,2 @@
++# Default ignored files
++/workspace.xml
+\ No newline at end of file
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+new file mode 100644
+index 0000000..ce7c471
+--- /dev/null
++++ b/.idea/misc.xml
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" project-jdk-name="12" project-jdk-type="JavaSDK">
++    <output url="file://$PROJECT_DIR$/out" />
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+index 0000000..36d6e9c
+--- /dev/null
++++ b/.idea/modules.xml
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/JPMC-tech-task-1.iml" filepath="$PROJECT_DIR$/JPMC-tech-task-1.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+new file mode 100644
+index 0000000..35eb1dd
+--- /dev/null
++++ b/.idea/vcs.xml
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="VcsDirectoryMappings">
++    <mapping directory="" vcs="Git" />
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/JPMC-tech-task-1.iml b/JPMC-tech-task-1.iml
+new file mode 100644
+index 0000000..ad3c0a3
+--- /dev/null
++++ b/JPMC-tech-task-1.iml
+@@ -0,0 +1,9 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="PYTHON_MODULE" version="4">
++  <component name="NewModuleRootManager" inherit-compiler-output="true">
++    <exclude-output />
++    <content url="file://$MODULE_DIR$" />
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+diff --git a/client.py b/client.py
+index 40badcd..848759d 100644
+--- a/client.py
++++ b/client.py
+@@ -35,14 +35,16 @@ def getDataPoint(quote):
+ 	stock = quote['stock']
+ 	bid_price = float(quote['top_bid']['price'])
+ 	ask_price = float(quote['top_ask']['price'])
+-	price = bid_price
++	price = (bid_price + ask_price) / 2
+ 	return stock, bid_price, ask_price, price
+ 
+ def getRatio(price_a, price_b):
+ 	""" Get ratio of price_a and price_b """
+ 	""" ------------- Update this function ------------- """
+ 	""" Also create some unit tests for this function in client_test.py """
+-	return 1
++	if price_b == 0:
++		return
++	return price_a / price_b
+ 
+ # Main
+ if __name__ == "__main__":
+@@ -52,8 +54,10 @@ if __name__ == "__main__":
+ 		quotes = json.loads(urllib2.urlopen(QUERY.format(random.random())).read())
+ 
+ 		""" ----------- Update to get the ratio --------------- """
++		prices = {}
+ 		for quote in quotes:
+ 			stock, bid_price, ask_price, price = getDataPoint(quote)
++			prices[stock] = price
+ 			print "Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price)
+ 
+-		print "Ratio %s" % getRatio(price, price)
++		print "Ratio %s" % getRatio(prices['ABC'], prices['DEF'])
+diff --git a/client.pyc b/client.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..607f93a18f783cafbfd19d586923bb31deb55d93
+GIT binary patch
+literal 1434
+zcmcIj+io015IuA8#=BW3jxQn0Q-c&`B4IZ06j`|dwh16%Icr5xMuAa#y1btC?96()
+zH*&=K$@~Q$zzd(k#~{HwRJC^l;u&V9tE;N3s_Swl`hBJI>u>LWpJV=9<NY&Ub|nA|
+ze*sD$ea8n#gM~gs8ZP(<X#~TX7>4;Jm>55@V+&@<GuJ@NFfE*hXxhQ~FQ7JP36}wO
+zzxxSk2NYs-9R!TJpctbSP=ry0ONbGFqZ@NRy@`TDui|_Ubd&ubBfSM`fo_T2>lo=8
+z(siU8NH;<Jt%BC@$Z!s8pmorOXpdvue)iSb&v<E;L439f(?(CW4tkfNKON#_<-2g0
+zT<5kFfAX_$KVbI6xyg3FU)H%UPipJ7A3k{apno={=IztMJpSRL_=8)R^THCZnAZ+3
+zd%$GoL-sBLxGNz<kK5Mc>@UKFF8*5=VHRQ*;XQ8V=0%KIFjvfCDdR9{N#t!N>Y%C3
+zG$*CYQq{-Gosg=C3>o!Cms7IJ)oMr;HQKR}GTP}$T~tmv$<n$yKXn2ES5LB|!g%eZ
+zDRO$J)%LUq*&>nB{P}TNYnO<>7tf}(qXA2BZ6+KgyNVzZdtXTdA49AXA@*w~{TG%R
+z+b;`U4bO|J(N%w!>?!Bc|K?yPds8%Ss!R5-hm9Vy?%SO$NBPN?<FH$w^z*Wy%6&X}
+z>$)6mNN$(QJMiVn6&)ssI>83NH-cOeSS&x9JFMW=GUf%PjDrw|JStXg9wreV+7Fqi
+zXXF&Ouc)QLzOqa!U70z5q!^vRzAr103w-P5hX3G?t}Mj(Kdye6Lvr;4N%Fpg7knV@
+z265ozEX&5asItu7W8t}s%c#3nX{QpN*7jZdk>ZB>-KWjmeJhSWBAYtt#^+z`_<eWp
+z%j7o8zO-pmmc`MhPVnxEF?nWW>&i(EJW*4RJxZRx*c-fZf}#C^4=w-KJiAJdDa*Xa
+zIlFKvVwZV8#+tE<tLh2QTLK@~%~(5sSwq@*oyVc|tgpfj1fm|81MwLM&i@6&gjN5?
+oG#-ulw=C(&ri52ax`BVAR@4gH{B)!BU@K|`E5V(h6ZFEr011dZGXMYp
+
+literal 0
+HcmV?d00001
+
+diff --git a/client_test.py b/client_test.py
+index a608a01..0c2366c 100644
+--- a/client_test.py
++++ b/client_test.py
+@@ -1,5 +1,6 @@
+ import unittest
+ from client import getDataPoint
++from client import getRatio
+ 
+ class ClientTest(unittest.TestCase):
+   def test_getDataPoint_calculatePrice(self):
+@@ -8,6 +9,8 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
++    for quote in quotes:
++      self.assertEqual(getDataPoint(quote), (quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'], (quote['top_bid']['price'] + quote['top_ask']['price']) / 2))
+ 
+   def test_getDataPoint_calculatePriceBidGreaterThanAsk(self):
+     quotes = [
+@@ -15,9 +18,26 @@ class ClientTest(unittest.TestCase):
+       {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'}
+     ]
+     """ ------------ Add the assertion below ------------ """
++    for quote in quotes:
++      self.assertEqual(getDataPoint(quote), (quote['stock'], quote['top_bid']['price'], quote['top_ask']['price'], (quote['top_bid']['price'] + quote['top_ask']['price']) / 2))
+ 
+ 
+   """ ------------ Add more unit tests ------------ """
++  def test_getRatio(self):
++    quotes = [
++      {'top_ask': {'price': 121.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
++      {'top_ask': {'price': 121.68, 'size': 4}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 117.87, 'size': 81}, 'id': '0.109974697771', 'stock': 'DEF'},
++      {'top_ask': {'price': 119.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'}
++    ]
++    for quote in quotes:
++      self.assertEqual(getRatio(quote['top_bid']['price'], quote['top_ask']['price']), quote['top_bid']['price'] / quote['top_ask']['price'])
++
++  def test_getRatio_edgeCases(self):
++    quote1 = {'top_ask': {'price': 0, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'}
++    self.assertIsNone(getRatio(quote1['top_bid']['price'], quote1['top_ask']['price']))
++
++    quote2 = {'top_ask': {'price': 121.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 0, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'}
++    self.assertEqual(getRatio(quote2['top_bid']['price'], quote2['top_ask']['price']), 0)
+ 
+ 
+ 
+-- 
+2.21.0
+
